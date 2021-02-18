@@ -1,63 +1,168 @@
 <!doctype html>
 <html>
 <head>
-<title>Lab 3 Assignment</title>
+<title>Assignment 1</title>
 <style>
 
-table.paleBlueRows {
-  border: 1px solid #FFFFFF;
-  width: 350px;
-  height: 200px;
-  text-align: center;
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,500,700,300,100);
+
+body {
+  background-color: #92a2ad;
+  font-family: "Roboto", helvetica, arial, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  text-rendering: optimizeLegibility;
+}
+
+div.table-title {
+  display: block;
+  margin: auto;
+  max-width: 600px;
+  padding:5px;
+  width: 100%;
+}
+
+.table-title h3 {
+   color: #fafafa;
+   font-size: 30px;
+   font-weight: 400;
+   font-style:normal;
+   font-family: "Roboto", helvetica, arial, sans-serif;
+   text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.1);
+   text-transform:uppercase;
+}
+
+
+/*** Table Styles **/
+
+.table-fill {
+  background: white;
+  border-radius:3px;
   border-collapse: collapse;
+  height: 320px;
+  margin: auto;
+  max-width: 75%;
+  padding:5px;
+  width: 100%;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  animation: float 5s infinite;
 }
-table.paleBlueRows td, table.paleBlueRows th {
-  border: 1px solid #FFFFFF;
-  padding: 3px 2px;
+ 
+th {
+  color:#D5DDE5;;
+  background:#242a2e;
+  border-bottom:4px solid #9ea7af;
+  border-right: 1px solid #343a45;
+  font-size:18px;
+  font-weight: 100;
+  padding:10px;
+  text-align:center;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  vertical-align:middle;
+  position: sticky;
+  top: 0;
 }
-table.paleBlueRows tbody td {
-  font-size: 13px;
+
+th:first-child {
+  border-top-left-radius:3px;
 }
-table.paleBlueRows tr:nth-child(even) {
-  background: #D0E4F5;
+ 
+th:last-child {
+  border-top-right-radius:3px;
+  border-right:none;
 }
-table.paleBlueRows thead {
-  background: #0B6FA4;
-  border-bottom: 5px solid #FFFFFF;
+  
+tr {
+  border-top: 1px solid #C1C3D1;
+  border-bottom-: 1px solid #C1C3D1;
+  color:#666B85;
+  font-size:14px;
+  font-weight:normal;
+  text-shadow: 0 1px 1px rgba(256, 256, 256, 0.1);
 }
-table.paleBlueRows thead th {
-  font-size: 17px;
-  font-weight: bold;
-  color: #FFFFFF;
-  text-align: center;
-  border-left: 2px solid #FFFFFF;
+ 
+tr:hover td {
+  background:#9fbdd4;
+  color:#242a2e;
+  border: 1px solid #8299a8;
 }
-table.paleBlueRows thead th:first-child {
-  border-left: none;
+ 
+tr:first-child {
+  border-top:none;
+}
+
+tr:last-child {
+  border-bottom:none;
+}
+ 
+tr:nth-child(odd) td {
+  background:#EBEBEB;
+}
+ 
+tr:nth-child(odd):hover td {
+  background:#9fbdd4;
+}
+
+tr:last-child td:first-child {
+  border-bottom-left-radius:3px;
+}
+ 
+tr:last-child td:last-child {
+  border-bottom-right-radius:3px;
+}
+ 
+td {
+  background:#FFFFFF;
+  padding:10px;
+  text-align:center;
+  vertical-align:middle;
+  font-weight:300;
+  font-size:14px;
+  text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.1);
+  border-right: 1px solid #C1C3D1;
+}
+
+td:last-child {
+  border-right: 0px;
+}
+
+/*** Other Styles **/
+
+#utilized {
+  color:#cc1b25;
+  font-weight:600;
 }
 
 </style>
 </head>
 <body>
 
-<h2>Singapore carpark availability table</h2>
-<table id="carparkTable" class="paleBlueRows">
-  <thead>
-    <tr>
+<div class="table-title">
+<h3>Singapore carpark availability table</h3>
+</div>
+<table id="carparkTable" class="table-fill">
+    <thead>
+        <tr>
         <th>Carpark Number</th>
         <th>Timestamp</th>
+        <th>Lot Type</th>
         <th>Total Lots</th>
         <th>Lots available</th>
-        <th>Utilization</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-    </tr>
-  </tbody>
+        <th>Utilization (%)</th>
+        </tr>
+    </thead>
+    <tbody class="table-hover">
+      <tr>
+      </tr>
+    </tbody>
 </table>
+  
+
+</body>
+
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="sorttable.js"></script>
 <script>
 
 
@@ -67,34 +172,51 @@ fetch('https://api.data.gov.sg/v1/transport/carpark-availability')
 
       let row = ''; 
       let carpark = data.items[0].carpark_data;
-      console.log(carpark);
-
-      //let utilization = (carpark.carpark_info.total_lots - carpark.carpark_info.lot_available)/ carpark.carpark_info.total_lots;
+      //console.log(carpark[0]);
 
       $.each(carpark, function (key, value) { 
 
+          let utilization = Math.trunc( 100 * (value.carpark_info[0].total_lots - value.carpark_info[0].lots_available)
+                                         / value.carpark_info[0].total_lots);
+                                         
+          if (isNaN(utilization)){
+              //Weed out this row
+              return;
+          }                               
+          
+          //console.log(utilization);
+          
           row += '<tr>'; 
           row += '<td>' +  
-              carpark.carpark_number + '</td>'; 
+              value.carpark_number + '</td>'; 
 
           row += '<td>' +  
-              carpark.update_datetime + '</td>'; 
+              value.update_datetime + '</td>'; 
+              
+          row += '<td>' + 
+              value.carpark_info[0].lot_type + '</td>'; 
 
-          row += '<td>hi</td>'; 
-              //carpark.carpark_info.items[0].total_lots + '</td>'; 
+          row += '<td>' + 
+              value.carpark_info[0].total_lots + '</td>'; 
 
-          row += '<td>hi</td>';
-              //carpark.carpark_info.items[0].lot_available + '</td>'; 
-
-          row += '<td>hi</td>';
+          row += '<td>' +
+              value.carpark_info[0].lots_available + '</td>'; 
+              
+          if(utilization >= 80){
+            row += '<td id="utilized">' + utilization + '</td>';
+          } else {
+            row += '<td>' + utilization + '</td>';
+          }
 
           row += '</tr>'; 
       }); 
         
       $('#carparkTable').append(row); 
+      $('#carparkTable').addSortWidget();
+
   
   });
-
+  
 
 </script>
 </body>
