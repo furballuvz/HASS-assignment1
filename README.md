@@ -1,2 +1,2 @@
-# HASS02.526
+# HASS02.526 Interactive Data Visualization
  

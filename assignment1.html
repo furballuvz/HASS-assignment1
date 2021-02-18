@@ -1,0 +1,101 @@
+<!doctype html>
+<html>
+<head>
+<title>Lab 3 Assignment</title>
+<style>
+
+table.paleBlueRows {
+  border: 1px solid #FFFFFF;
+  width: 350px;
+  height: 200px;
+  text-align: center;
+  border-collapse: collapse;
+}
+table.paleBlueRows td, table.paleBlueRows th {
+  border: 1px solid #FFFFFF;
+  padding: 3px 2px;
+}
+table.paleBlueRows tbody td {
+  font-size: 13px;
+}
+table.paleBlueRows tr:nth-child(even) {
+  background: #D0E4F5;
+}
+table.paleBlueRows thead {
+  background: #0B6FA4;
+  border-bottom: 5px solid #FFFFFF;
+}
+table.paleBlueRows thead th {
+  font-size: 17px;
+  font-weight: bold;
+  color: #FFFFFF;
+  text-align: center;
+  border-left: 2px solid #FFFFFF;
+}
+table.paleBlueRows thead th:first-child {
+  border-left: none;
+}
+
+</style>
+</head>
+<body>
+
+<h2>Singapore carpark availability table</h2>
+<table id="carparkTable" class="paleBlueRows">
+  <thead>
+    <tr>
+        <th>Carpark Number</th>
+        <th>Timestamp</th>
+        <th>Total Lots</th>
+        <th>Lots available</th>
+        <th>Utilization</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+    </tr>
+  </tbody>
+</table>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+
+
+fetch('https://api.data.gov.sg/v1/transport/carpark-availability')
+  .then(response => response.json())
+  .then(data => {
+
+      let row = ''; 
+      let carpark = data.items[0].carpark_data;
+      console.log(carpark);
+
+      //let utilization = (carpark.carpark_info.total_lots - carpark.carpark_info.lot_available)/ carpark.carpark_info.total_lots;
+
+      $.each(carpark, function (key, value) { 
+
+          row += '<tr>'; 
+          row += '<td>' +  
+              carpark.carpark_number + '</td>'; 
+
+          row += '<td>' +  
+              carpark.update_datetime + '</td>'; 
+
+          row += '<td>hi</td>'; 
+              //carpark.carpark_info.items[0].total_lots + '</td>'; 
+
+          row += '<td>hi</td>';
+              //carpark.carpark_info.items[0].lot_available + '</td>'; 
+
+          row += '<td>hi</td>';
+
+          row += '</tr>'; 
+      }); 
+        
+      $('#carparkTable').append(row); 
+  
+  });
+
+
+</script>
+</body>
+</html>
